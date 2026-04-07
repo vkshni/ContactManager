@@ -40,4 +40,35 @@
 - Delete contact
 - Edit contact (`name`,`phone`,`email`)
 
+## Storage layer
+- Directories and file paths
+```python
+PROJECT_DIR = # Path
+DATA_DIR = # Path
+CONTACTS_FILE_PATH = # Path
+```
+- Classes and methods
+    - JSONFile:
+        - read_json(default=None) -> list[dict]
+        - write_json(data, indent=4) -> bool
 
+    - ContactDB:
+        - self.json_handler (JSONFile)
+        - setup(data, indent=4) -> bool
+        - add(contact: Contact) -> bool
+        - get_all() -> list[Contact]
+        - delete(contact: Contact) -> bool
+        - edit(contact: Contact) -> bool
+
+## Entity layer
+- Classes and methods   
+    - __init__(self, name, phone, email=None, id=None)
+    - `@classmethod` from_dict(cls, contact_dict) -> bool
+    - to_dict(self) -> dict
+
+- Validators
+    - validate_name(name)
+    - validate_phone(phone)
+    - validate_email(email)
+
+    

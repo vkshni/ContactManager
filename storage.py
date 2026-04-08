@@ -81,6 +81,40 @@ class ContactDB:
         contacts = [Contact.from_dict(c) for c in data]
 
         return contacts
+    
+    # Update contact
+    def update(self, contact: Contact):
+
+        # Read all
+        data = self.json_handler.read_json(default=[])
+
+        updated = False
+        for i, contact in enumerate(data):
+            if data["id"] == contact.id:
+                data[i] = contact.to_dict()
+                updated = True
+                break
+
+        if updated:
+            self.json_handler.write_json(data)
+
+        return updated
+    
+    # Delete contact
+    def delete(self, contact: Contact):
+
+        # Read all
+        data = self.json_handler.read_json(default=[])
+
+        # Filtered data
+        filtered = [c for c in data if c["id"] != contact.id]
+
+        if len(data) == len(filtered):
+            return False
+        
+        # Write filtered
+        self.json_handler.write_json(filtered)
+        return True
 
 
 

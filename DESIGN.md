@@ -43,32 +43,43 @@
 ## Storage layer
 - Directories and file paths
 ```python
-PROJECT_DIR = # Path
+PROJECT_ROOT = # Path
 DATA_DIR = # Path
 CONTACTS_FILE_PATH = # Path
 ```
 - Classes and methods
     - JSONFile:
-        - read_json(default=None) -> list[dict]
-        - write_json(data, indent=4) -> bool
+        - `read_json(default=None)` -> list[dict]
+        - `write_json(data, indent=4)` -> bool
 
     - ContactDB:
-        - self.json_handler (JSONFile)
-        - setup(data, indent=4) -> bool
-        - add(contact: Contact) -> bool
-        - get_all() -> list[Contact]
-        - delete(contact: Contact) -> bool
-        - edit(contact: Contact) -> bool
+        - `self.json_handler` (JSONFile)
+        - `create_file(data=[], indent=4)` -> bool
+        - `add(contact: Contact)` -> bool
+        - `get_all()` -> list[Contact]
+        - `delete(contact: Contact)` -> bool
+        - `edit(contact: Contact)` -> bool
 
 ## Entity layer
-- Classes and methods   
-    - __init__(self, name, phone, email=None, id=None)
-    - `@classmethod` from_dict(cls, contact_dict) -> bool
-    - to_dict(self) -> dict
+- Class `Contact`  
+    - `__init__(name, phone, email=None, id=None)`
+    - *`@classmethod`* `from_dict(cls, contact_dict)` -> Contact
+    - `to_dict()` -> dict
+    - `to_list()` -> list
 
 - Validators
-    - validate_name(name)
-    - validate_phone(phone)
-    - validate_email(email)
+    - `validate_name(name)` -> (bool, error_msg)
+    - `validate_phone(phone)` -> (bool, error_msg)
+    - `validate_email(email)` -> (bool, error_msg)
 
-    
+## Service layer
+- Class `ContactManager`
+    - `add_contact(name, phone, emali=None)` -> bool
+    - `list_all()` -> list[Contact]
+    - `search_by_phone(phone)` -> Contact
+
+## CLI layer
+- Methods
+    - `cmd_add`
+    - `cmd_list`
+    - `cmd_help`

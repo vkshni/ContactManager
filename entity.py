@@ -6,7 +6,7 @@ from uuid import uuid4
 # Contact
 class Contact:
 
-    def __init__(self, name: str, phone: int, email: str=None, id: str=None):
+    def __init__(self, name: str, phone: str, email: str=None, id: str=None):
         self.name = name
         self.phone = phone
         self.email = email
@@ -15,6 +15,13 @@ class Contact:
     def __str__(self):
         return f"Contact(name={self.name}, phone={self.phone}, email={self.email}, id={self.id})"
     
+    def to_list(self):
+        return [
+            self.id,
+            self.name,
+            self.phone,
+            self.email
+        ]
 
     def to_dict(self):
 

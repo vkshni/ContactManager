@@ -37,6 +37,22 @@ class ContactManager:
             if phone in contact.phone:
                 return contact
             
+    # Search by name
+    def search_by_name(self, name: str) -> list[Contact]:
+
+        contacts = self.contact_db.get_all()
+
+        searches = [contact for contact in contacts if name.lower() in contact.name.lower()]
+        return searches
+    
+    # Search by email
+    def search_by_email(self, email: str) -> list[Contact]:
+    
+        contacts = self.contact_db.get_all()
+
+        searches = [contact for contact in contacts if contact.email and email.lower() in contact.email.lower()]
+        return searches
+            
     # List all contacts
     def list_all(self) -> list[list]:
 
@@ -50,7 +66,49 @@ class ContactManager:
             ]
         
         return numbered
+    
+    # Get display id
+    def get_contact_by_display_id(self, display_id: int) -> Contact | None:
+
+        # Get all contacts(numbered)
+        contacts = self.contact_db.get_all()
+
+        if 0 < display_id <= len(contacts):
+            return contacts[display_id-1]
+        
+        return None
             
+    # Delete contact
+    def delete_contact(self, display_id: int) -> bool:
+
+        contact = self.get_contact_by_display_id(display_id)
+
+        if not contact:
+            raise ValueError(f"Contact with '{display_id}' not found")
+        
+        self.contact_db.delete(contact)
+        return True
+    
+    # Edit contact
+    def edit_contact(self, display_id: int, **kwargs) -> bool:
+
+        contact = self.get_contact_by_display_id(display_id)
+
+        if not contact:
+            raise ValueError(f"Contact with '{display_id}' not found")
+        
+        if kwargs.get("name"):
+            contact.name = kwargs["name"]
+        if kwargs.get("phone"):
+            contact.phone = kwargs["phone"]
+        if kwargs.get("email"):
+            contact.email = kwargs["email"]
+
+        # Write to db
+        self.contact_db.update(contact)
+        return True
+
+
 if __name__ == "__main__":
 
     cm = ContactManager()
@@ -59,3 +117,12 @@ if __name__ == "__main__":
     all_contacts = cm.list_all()
     for c in all_contacts:
         print(c)
+    # searches = cm.search_by_name("v")
+    # for s in searches:
+    #     print(s)
+    # searches = cm.search_by_email("riya")
+    # for s in searches:
+    #     print(s)
+
+    # print(cm.delete_contact(2))
+    # print(cm.edit_contact(4, name="Riya Singh", phone="9999998888", email="riyasingh@gmail.com"))

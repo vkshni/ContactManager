@@ -35,6 +35,11 @@ def validate(arg, method):
     if not is_valid:
         print_error(f"Command failed: {error_msg}")
         sys.exit(0)
+
+# Print table
+def print_table(data: list[list], headers: list):
+    from tabulate import tabulate
+    print(tabulate(data, headers=headers))
     
 
 
@@ -66,6 +71,107 @@ def cmd_add(args):
         print_error(f"Command failed")
         sys.exit(1)
 
+# search command
+def cmd_search(args):
+
+    if not args:
+        print("No arguments passed")
+        sys.exit(0)
+    
+    if args.name:
+        results = cm.search_by_name(args.name)
+        if not results:
+            print_error(f"No contacts found with name '{args.name}'")
+            sys.exit(0)
+        headers = ["#", "Name", "Phone", "Email"]
+        formatted_data = [
+            [i, c.name, c.phone, c.email if c.email else "-"]
+            for i,c in enumerate(results, start=1)
+        ]
+        print_table(formatted_data, headers)
+        print()
+        print_success(f"{len(results)} contact(s) found")
+        sys.exit(0)
+    if args.phone:
+        results = cm.search_by_phone(args.phone)
+        if not results:
+            print_error(f"No contacts found with phone '{args.phone}'")
+            sys.exit(0)
+        headers = ["#", "Name", "Phone", "Email"]
+        formatted_data = [
+            [i, c.name, c.phone, c.email if c.email else "-"]
+            for i,c in enumerate(results, start=1)
+        ]
+        print_table(formatted_data, headers)
+        print()
+        print_success(f"{len(results)} contact(s) found")
+        sys.exit(0)
+    
+    if args.email:
+        results = cm.search_by_email(args.email)
+        if not results:
+            print_error(f"No contacts found with email '{args.phone}'")
+        headers = ["#", "Name", "Phone", "Email"]
+        formatted_data = [
+            [i, c.name, c.phone, c.email if c.email else "-"]
+            for i,c in enumerate(results, start=1)
+        ]
+        print_table(formatted_data, headers)
+        print()
+        print_success(f"{len(results)} contact(s) found")
+        sys.exit(0)
+        
+# Delete command
+def cmd_delete(args):
+
+    if not args:
+        print("No arguments passed")
+        sys.exit(0)
+
+    try:
+        result = cm.delete_contact(args.display_id)
+        if result:
+            print_success(f"Contact with display ID '{args.display_id}' deleted successfully")
+            sys.exit(0)
+        else:
+            print_error("Command failed")
+            sys.exit(1)
+    except ValueError as e:
+        print_error(e)
+        sys.exit(1)
+
+# Edit command
+def cmd_edit(args):
+
+    if not args:
+        print("No arguments passed")
+        sys.exit(0)
+
+    try:
+        # Validating inputs
+        if args.name:
+            validate(args.name, validate_name)
+        if args.phone:
+            validate(args.phone, validate_phone)
+        if args.email:
+            validate(args.email, validate_email)
+        result = cm.edit_contact(
+            args.display_id,
+            name=args.name if args.name else None,
+            phone=args.phone if args.phone else None,
+            email=args.email if args.email else None
+        )
+        if result:
+            print_success(f"Contact with display ID '{args.display_id}' updated successfully")
+            sys.exit(0)
+        else:
+            print_error("Command failed")
+            sys.exit(1)
+    except ValueError as e:
+        print_error(e)
+        sys.exit(1)
+    
+
 # list command
 def cmd_list():
 
@@ -81,9 +187,7 @@ def cmd_list():
         for c in contacts
     ]
 
-    # Import tabulate
-    from tabulate import tabulate
-    print(tabulate(tabular_data=formatted_data, headers=headers))
+    print_table(formatted_data, headers)
     print()
     print_success(f"Total {len(contacts)} contact(s) fetched\n")
     sys.exit(0)
@@ -113,6 +217,23 @@ def run():
     add_parser.add_argument("--phone", required=True)
     add_parser.add_argument("--email")
 
+    # Search parser
+    search_parser = sub.add_parser("search", help="Search in contacts using name, phone number or email")
+    search_parser.add_argument("--name")
+    search_parser.add_argument("--phone")
+    search_parser.add_argument("--email")
+
+    # Delete parser
+    delete_parser = sub.add_parser("delete", help="Delete contact using display ID shown when list command run")
+    delete_parser.add_argument("display_id", type=int)
+
+    # Edit parser
+    edit_parser = sub.add_parser("edit", help="Edit contact using display ID shown when list command run")
+    edit_parser.add_argument("display_id", type=int)
+    edit_parser.add_argument("--name")
+    edit_parser.add_argument("--phone")
+    edit_parser.add_argument("--email")
+
     # List parser
     list_parser = sub.add_parser("list",help="List all contacts")
 
@@ -131,6 +252,15 @@ def run():
         
         elif args.command == "add":
             return cmd_add(args)
+        
+        elif args.command == "search":
+            return cmd_search(args)
+        
+        elif args.command == "edit":
+            return cmd_edit(args)
+
+        elif args.command == "delete":
+            return cmd_delete(args)
 
         else:
             print("Available commands: list")

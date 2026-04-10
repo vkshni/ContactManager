@@ -17,7 +17,7 @@ class ContactManager:
     def add_contact(self, name: str, phone: str, email: str=None) -> bool:
 
         # Check if phone exists or not
-        existing = self.search_by_phone(phone)
+        existing = self.phone_exists(phone)
         if existing:
             raise ValueError(f"Contact with phone {phone} already exists")
 
@@ -28,15 +28,24 @@ class ContactManager:
         self.contact_db.add(contact)
         return True
 
+    # check if phone number exists
+    def phone_exists(self, phone: str):
+
+        contacts = self.contact_db.get_all()
+        for contact in contacts:
+            if phone == contact.phone:
+                return True
+            
+        return False
+            
     # Search by phone
     def search_by_phone(self, phone: str) -> Contact:
 
-        contacts = self.contact_db.get_all()
 
-        for contact in contacts:
-            if phone in contact.phone:
-                return contact
-            
+        contacts = self.contact_db.get_all()
+        searches = [contact for contact in contacts if phone in contact.phone]
+        return searches
+    
     # Search by name
     def search_by_name(self, name: str) -> list[Contact]:
 
@@ -84,7 +93,7 @@ class ContactManager:
         contact = self.get_contact_by_display_id(display_id)
 
         if not contact:
-            raise ValueError(f"Contact with '{display_id}' not found")
+            raise ValueError(f"Contact with display ID '{display_id}' not found")
         
         self.contact_db.delete(contact)
         return True
@@ -95,7 +104,7 @@ class ContactManager:
         contact = self.get_contact_by_display_id(display_id)
 
         if not contact:
-            raise ValueError(f"Contact with '{display_id}' not found")
+            raise ValueError(f"Contact with display ID '{display_id}' not found")
         
         if kwargs.get("name"):
             contact.name = kwargs["name"]

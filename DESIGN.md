@@ -21,7 +21,7 @@
     {
         "id":"49438sdj-8wj48-sdj9",
         "name": "Jonathan Majors"
-        "phone": 9428402380,
+        "phone": "9428402380",
         "email": "jonathan.majors@gmail.com"
     },
     ...
@@ -30,7 +30,7 @@
 - **Constraints**  
     - ID: Mandatory, uuid4  
     - Name: Mandatory, max 50 chars  
-    - Phone: Mandatory, 10 digit number   
+    - Phone: Mandatory, 10 digit string  
     - Email: Optional, valid email
 
 ## Features
@@ -76,6 +76,7 @@ CONTACTS_FILE_PATH = # Path
 - Class `ContactManager`
     - `add_contact(name, phone, emali=None)` -> bool
     - `list_all()` -> list[Contact]
+    - `phone_exists(phone)` -> bool
     - `search_by_phone(phone)` -> Contact
     - `search_by_name(name)` -> Contact
     - `search_by_email(name)` -> Contact
@@ -86,6 +87,9 @@ CONTACTS_FILE_PATH = # Path
 ## CLI layer
 - Methods
     - `cmd_add()` - `add` command
+    - `cmd_search()` - `search` command (search by name, phone or email)
+    - `cmd_delete()` - `delete` command (using display ID)
+    - `cmd_edit()` - `edit` command (using display ID)
     - `cmd_list()` - `list` command
     - `cmd_help()` - `help` command
     - `run()` - Main argument parser and excecution

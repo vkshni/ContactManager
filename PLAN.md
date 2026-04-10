@@ -22,3 +22,8 @@
 - **Create `edit()`, `search()` and `delete()` methods in `engine.py`** ✅
 - **Create validators in `entity.py`** ✅
 - **Create `add` command in CLI** ✅
+
+## Day 5 - CLI Layer 
+- **Create `search` commands for name, phone and email**
+- **Create `delete` command**
+- **Create `edit` command**

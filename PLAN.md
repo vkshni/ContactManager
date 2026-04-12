@@ -29,10 +29,10 @@
 - **Create `edit` command** ✅
 
 ## Day 6 - Testing and Polish
-- **Improve help texts**
-- **Make commands user friendly**
-- **Health check file**
+- **Improve help texts** ✅
+- **Make commands user friendly** ✅
+- **Health check file** ✅
 
 ## Day 7 - Documentation and final words!
-- **Prepare `README.md` file**
-- **Post on X and GitHub**
+- **Prepare `README.md` file** ✅
+- **Post on X and GitHub** ✅
